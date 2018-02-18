@@ -5,8 +5,17 @@ Raspberry PiやMacでプローブ要求をキャプチャして内容を表示�
 
 
 ## Go環境のセットアップ
-サンプルプログラムはgolangで書かれています。
+サンプルプログラムはgolangで書かれています
 - goのインストール手順: http://golang-jp.org/doc/install
+
+golangで作成したプログラムは1つのバイナルファイルとなるため取り回しが容易です。
+- Node.jsやRubyでは `npm install` などが必要で、特にセンサ環境ではインストール時にコケることが多いです
+- また `node` のバージョンが違うなどのエラーが出るのは日常茶飯事であり、それらの厳密な管理も必要となります
+- 貧弱なメモリ・プロセッサの場合はインストールに時間がかかることもしばしばです
+
+このため複数センサ環境においてインストールが容易でどのセンサ端末に置いても同じ動作が期待できるシングルバイナリ型の実行ファイルが有用であると考え、
+そのためにGoが用いられています
+
 
 ## プログラムのコンパイル＆実行
 
@@ -18,7 +27,7 @@ Raspberry PiやMacでプローブ要求をキャプチャして内容を表示�
 ...
 ```
 
-ネットワークインターフェースをモニタモードで使用するためには管理者権限が必要となるため、sudoなどをつけないとエラーになります
+ネットワークインターフェースをモニタモードで使用するためには管理者権限が必要となるため、sudoをつけます
 
 ## 取得したデータを転送する
 
@@ -27,7 +36,7 @@ Raspberry PiやMacでプローブ要求をキャプチャして内容を表示�
 👉 HTTP POST  
 👉 fluentd
 
-# MQTTの例
+### MQTTの例
 MQTTのライブラリ `phao.mqtt` を使用する
 
 ```:go
@@ -43,12 +52,12 @@ import (
 opts := MQTT.NewClientOptions()
 opts.AddBroker("your.broker.address")
 
-mqttClient := MQTT.NewClient(opts)
-if token := mqttClient.Connect(); token.Wait() && token.Error() != nil {
+client := MQTT.NewClient(opts)
+if token := client.Connect(); token.Wait() && token.Error() != nil {
     fmt.Println("MQTT Error:", token.Error())
     return
 }
-defer mqttClient.Disconnect(250)
+defer client.Disconnect(250)
 
 ...
 
