@@ -6,9 +6,9 @@ Raspberry PiやMacでプローブ要求をキャプチャして内容を表示�
 
 ## Go環境のセットアップ
 サンプルプログラムはgolangで書かれています
-- goのインストール手順: http://golang-jp.org/doc/install
+- Goのインストール手順: http://golang-jp.org/doc/install
 
-golangで作成したプログラムは1つのバイナルファイルとなるため取り回しが容易です。
+golangで作成したプログラムは1つのバイナルファイルとなるため取り回しが容易です
 - Node.jsやRubyでは `npm install` などが必要で、特にセンサ環境ではインストール時にコケることが多いです
 - また `node` のバージョンが違うなどのエラーが出るのは日常茶飯事であり、それらの厳密な管理も必要となります
 - 貧弱なメモリ・プロセッサの場合はインストールに時間がかかることもしばしばです
@@ -19,15 +19,27 @@ golangで作成したプログラムは1つのバイナルファイルとなる�
 
 ## プログラムのコンパイル＆実行
 
+このサンプルプログラムでは外部パッケージとして `github.com/sidepelican/goprobe/probe` ([goprobe](https://github.com/sidepelican/goprobe))を使用しています  
+コンパイルする前にあらかじめ使うパッケージを `go get` する必要があります
+
+```
+> go get github.com/sidepelican/goprobe/probe
+```
+
+ビルドは `go build` コマンドです。自動的にコンパイル対象ファイルを探して名前もつけてくれます
+
 ```
 > go build
+```
+
+ネットワークインターフェースをモニタモードで使用するためには管理者権限が必要となるため、実行する際はsudoをつけます
+
+```
 > sudo ./printprobe
 2018/02/18 22:01:20 used interface: en1
 2018/02/18 22:01:20 pcap version: libpcap version 1.8.1 -- Apple version 79.20.1
 ...
 ```
-
-ネットワークインターフェースをモニタモードで使用するためには管理者権限が必要となるため、sudoをつけます
 
 ## 取得したデータを転送する
 
